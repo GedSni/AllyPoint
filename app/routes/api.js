@@ -1,10 +1,66 @@
 const express = require('express');
 const router = express.Router();
-
+const jwt = require('jsonwebtoken');
+const session = require('express-session');
 const User = require('../models/user');
 const Game = require('../models/game');
 const Category = require('../models/category');
 const Country = require('../models/country');
+
+//JWT middleware
+function ensureToken(req, res, next) {
+  const bearerHeader = req.headers["authorization"];
+  if (typeof bearerHeader !== 'undefined') {
+    const bearer = bearerHeader.split(" ");
+    const bearerToken = bearer[1];
+    req.token = bearerToken;
+    next();
+  } else {
+    res.status(403).send({error: "Token undefined"});
+  }
+}
+
+//REGISTER (POST USER)
+router.post('/register', function(req, res){
+	User.create(req.body).then(function(user){
+		res.status(201);
+		res.send(user);
+	}).catch(next);
+});
+
+//DASHBOARD, session, jwt
+router.get('/dashboard', ensureToken, function(req, res){
+	jwt.verify(req.token, 'my_secret_key', function(err){
+		if(err){
+			return res.status(403).send({error: "Token undefined"});
+		}
+		else{
+			if(!req.session.user){
+				return res.status(401).send();
+			}
+			return res.status(200).send("Logged in");
+		}
+	});	
+});
+
+//LOGIN, session, jwt
+router.post('/login', function(req, res){
+	var username = req.body.username;
+	var password = req.body.password;
+	
+	User.findOne({username: username, password: password}, function(err, user){
+		if(err)
+			return res.status(500).send({error: "Logic credentials incorrect"});
+		if(!user)
+			return res.status(404).send({error: "The requested resource could not be found (special case)"});
+		
+		const token = jwt.sign({ user }, 'my_secret_key');
+		req.session.user = user;
+		res.json({
+			token: token
+		});
+	});
+});
 
 //GET method for USERS
 router.get('/users', function(req, res, next){
@@ -13,7 +69,7 @@ router.get('/users', function(req, res, next){
 	});
 });
 
-//*******BETTER TO USE Q OR BLUEBIRD PROMISES (or async)*******
+
 //GET ONE method for USER (returns all user's friends and that user's info)
 router.get('/users/:id/friendlist', function(req, res, next){
 	var result = {};
@@ -54,7 +110,6 @@ router.post('/users', function(req, res, next){
 	}).catch(next);
 });
 
-//*******BETTER TO USE Q OR BLUEBIRD PROMISES (or async)*******
 //PUT method for USER (adds a user to a friendlist (both ways))
 router.put('/users/:id/friendlist/add', function(req, res, next){
 	if(req.params.id != req.body.friend){
@@ -99,6 +154,50 @@ router.put('/users/:id/friendlist/add', function(req, res, next){
 	}
 });
 
+//PUT method for USER (removes a user from a friendlist (both ways))
+router.put('/users/:id/friendlist/remove', function(req, res, next){
+	if(req.params.id != req.body.friend){
+		User.findOne({_id: req.params.id}).then(function(user){
+			if(!user)
+				res.status(404).send({error: "The requested resource could not be found (special case)"});
+			else{
+				User.update(
+					{ _id: req.params.id},
+					{ $pull: {friend: req.body.friend}}
+				).then(function(err){
+					if(err.nModified == 0){
+						res.status(404).send({error: "Nothing was modified, something went wrong."});
+						return;
+					}
+					User.findOne({_id: req.body.friend}).then(function(user2){
+						if(!user2)
+							res.status(404).send({error: "The requested resource could not be found (special case)"});
+						else
+							User.update(
+								{ _id: req.body.friend},
+								{ $pull: {friend: req.params.id}}
+							).then(function(err){
+								if(err.nModified == 0){
+									res.status(404).send({error: "Nothing was modified, something went wrong."});
+									return;
+								}
+								User.findOne({_id: req.params.id}).then(function(user3){
+									if(!user3)
+										res.status(404).send({error: "The requested resource could not be found (special case)"});
+									else
+										res.send(user3);
+								});
+							});
+					});
+				});
+			}
+		}).catch(next);
+	}
+	else{
+		res.status(404).send({error: "Trying to remove yourself"});
+	}
+});
+
 //PUT method for USERS
 router.put('/users/:id', function(req, res, next){
 	User.findByIdAndUpdate({_id: req.params.id}, req.body).then(function(){
@@ -128,7 +227,6 @@ router.get('/games', function(req, res, next){
 	});
 });
 
-//*******BETTER TO USE Q OR BLUEBIRD PROMISES (or async)*******
 //GET ONE method for GAME (returns all users filtered by a game and the games info)
 router.get('/games/:id', function(req, res, next){
 	var result = {};
@@ -188,7 +286,6 @@ router.get('/categories', function(req, res, next){
 	});
 });
 
-//*******BETTER TO USE Q OR BLUEBIRD PROMISES (or async)*******
 //GET ONE method for CATEGORIES (returns all games in a category)
 router.get('/categories/:id', function(req, res, next){
 	var result = {};
@@ -240,7 +337,6 @@ router.delete('/categories/:id', function(req, res, next){
 	}).catch(next);
 });
 
-//*******BETTER TO USE Q OR BLUEBIRD PROMISES (or async)*******
 //GET ONE method for COUNTRIES (returns all users filtered by a country and the country's info)
 router.get('/countries/:id', function(req, res, next){
 	var result = {};

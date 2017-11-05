@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
+require('dotenv').config();
 
 //set up express app
 const app = express();
@@ -9,6 +11,9 @@ const app = express();
 mongoose.connect('mongodb://localhost/allyPoint');
 mongoose.Promise = global.Promise;
 
+//sessions
+app.use(session({secret: process.env.SECRET, resave:false, saveUninitialized: true}));
+
 //present user with static content
 app.use(express.static('public'));
 
@@ -16,7 +21,7 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 
 //initialize routes
-app.use('/api', require('./routes/api'));
+app.use('/api', require('./app/routes/api'));
 
 //error handling middleware
 app.use(function(err, req, res, next){
