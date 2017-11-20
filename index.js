@@ -7,6 +7,11 @@ require('dotenv').config();
 //set up express app
 const app = express();
 
+//listen for requests
+app.listen(process.env.port || 4000, function(){
+	console.log('Now listening for requests');
+});
+
 //connect to mongodb
 mongoose.connect('mongodb://localhost/allyPoint');
 mongoose.Promise = global.Promise;
@@ -21,14 +26,19 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 
 //initialize routes
-app.use('/api', require('./app/routes/api'));
+var categoryController = require('./app/routes/categoryController');
+var countryController = require('./app/routes/countryController');
+var gameController = require('./app/routes/gameController');
+var userController = require('./app/routes/userController');
+app.use('/', categoryController);
+app.use('/', countryController);
+app.use('/', gameController);
+app.use('/', userController);
+
 
 //error handling middleware
 app.use(function(err, req, res, next){
 	res.status(404).send({error: "The requested resource could not be found"});
 });
 
-//listen for requests
-app.listen(process.env.port || 4000, function(){
-	console.log('Now listening for requests');
-});
+
