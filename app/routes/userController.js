@@ -55,8 +55,6 @@ router.post('/users', function(req, res, next){
 
 //PUT method for USER (adds a user to a friendlist (both ways))
 router.put('/users/:id/friendlist/add', function(req, res, next){
-    console.log(req.params.id + " // " + req.body.friend);
-    console.log('asdasd');
 	if(req.params.id != req.body.friend){
 		User.findOne({_id: req.params.id}).then(function(user){
 			if(!user)

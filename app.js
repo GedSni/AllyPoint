@@ -30,10 +30,12 @@ var categoryController = require('./app/routes/categoryController');
 var countryController = require('./app/routes/countryController');
 var gameController = require('./app/routes/gameController');
 var userController = require('./app/routes/userController');
+var authController = require('./app/auth/auth');
 app.use('/', categoryController);
 app.use('/', countryController);
 app.use('/', gameController);
 app.use('/', userController);
+app.use('/', authController);
 
 
 //error handling middleware
