@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 // create Schema and model
 const CountrySchema = new Schema({
+	avatar: String,
 	name: {
 		type: String,
 		required: [true, 'Name field is required']

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include partials/head.ejs %>
+</head>
+<body>
+	<% include partials/header.ejs %>
+	<div id="top-image">
+        <h1 id="top-title"><%= title %></h1>
+    </div>
+    <hr class="style1">
+    <center>
+        <img id="img-simple" src="/images/<%= game.poster %>" class="img-responsive">
+
+        <form id="addGameForm" style="display:none;" class="form-horizontal" method="POST" action='/users/<%= loggedUser._id %>/game/add?_method=PUT'>
+            <div class="form-group">
+                <input  type='hidden' name="id" value='<%= game._id %>' />
+            </div>
+            <div class="form-group">
+                <button type="submit"  id="addFriend" class="btn btn-warning btn-lg outline">Add game to your list</button>
+            </div>
+        </form>
+        <form id="removeGameForm" style="display:none;" class="form-horizontal" method="POST" action='/users/<%= loggedUser._id %>/game/remove?_method=PUT'>
+            <div class="form-group">
+                <input type='hidden' name="id" value='<%= game._id %>' />
+            </div>
+            <div class="form-group">
+                <button type="submit"  id="removeFriend" class="btn btn-danger btn-lg outline">Remove game from your list</button>
+            </div>
+        </form>
+    </center>
+    <hr class="style1">
+    <div class="container">
+        <div id="posters-wrapper" class="content-padding clearfix">
+            <% if(users.length > 0){ %>
+                <hr class="style1">
+                <h2>People playing <%= game.name %></h2>
+                <hr class="style1">
+            <% for (var i = 0; i < users.length; i++) { %>
+                <div class="poster">
+                    <a href="/users/<%= users[i].id %>">
+                        <img src="/images/flags/<%= users[i].avatar %>" class="img-responsive">
+                        <div class="poster-info-overlay">
+                            <h3><%= users[i].username %></h3>
+                            <h4>View More <i class="fa fa-arrow-right"></i></h4>
+                        </div>
+                    </a>
+                </div>	  
+            <% } %>
+            <% } else{ %>
+                <hr class="style1">
+                <h2>Noone is playing <%= game.name %></h2>
+                <hr class="style1">
+            <% } %>
+            <hr class="style1">
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        window.onload = function(){
+            var loggedUser = <%- JSON.stringify(loggedUser) %>;
+            var game = <%- JSON.stringify(game) %>;
+            var users = <%- JSON.stringify(users) %>;
+            var isPlaying = false; 
+
+            for (var i = 0; i < users.length; i++) { 
+                if(users[i]._id == loggedUser._id){
+                    for (var j = 0; j < users[i].game.length; j++) { 
+                        if(users[i].game[j] == game._id){ 
+                            isPlaying = true; 
+                        } 
+                    }
+                }
+            }
+        
+            if(isPlaying){
+                console.log("isPlaying");
+                document.getElementById("addGameForm").style.display = "none";
+                document.getElementById("removeGameForm").style.display = "";
+            }
+            else if(!isPlaying){
+                console.log("isnotPlaying");
+                document.getElementById("removeGameForm").style.display = "none";
+                document.getElementById("addGameForm").style.display = "";
+            }
+        };
+    </script>
+
+	<% include partials/footer.ejs %>
+    <% include partials/scripts.ejs %>
+
+</body>
+</html>

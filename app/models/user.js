@@ -21,7 +21,11 @@ const UserSchema = new Schema({
 	},
 	available: {
 		type: Boolean,
-		required: [true, 'Availability field is required']
+		default: true
+	},
+	avatar: {
+		type: String,
+		default: "lt.png"
 	},
 	game:{
 		type: [Schema.ObjectId],

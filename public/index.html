@@ -1,69 +1,13 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Ally Point</title>
-		<link href="http://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-		<link href="/styles.css" rel="stylesheet" type="text/css" />
-		<link rel="icon" href="/favicon/gradient-star-32-203568.png">
-	</head>
-	<body>
-		<h1 class="title">Ally point</h1>
-		<div id="homepage">
-			<h1>Find fellow gamers!</h1>
-			<div id="users"></div>
-		</div>
-		
-	<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-	<script src="https://unpkg.com/react@15/dist/react.js"></script>
-	<script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>﻿
-	
-	<!-- Create React Component -->
-	<script type="text/babel">
-	
-	var Users = React.createClass({
-		getInitialState: function(){
-			return({
-				users: []
-			});
-		},
-		render: function(){
-			var users = this.state.users;
-			users = users.map(function(user, index){
-				return(
-					<li key={index}>
-						<span className={user.available}></span>
-						<span className="username">{user.username}</span>
-						<span className="country">{user.country}</span>
-					</li>
-				)
-			});
-			return(
-				<div id="user-container">
-					<form id="search" onSubmit={this.handleSubmit}>
-						<input type="submit" value="Go!" />
-					</form>
-					<ul>
-					{users}
-					</ul>
-				</div>
-			);
-		},
-		handleSubmit: function(e){
-			e.preventDefault();
-			fetch('/api/users').then(function(data){
-				return data.json();
-			}).then( json => {
-				this.setState({
-					users: json
-				});
-			});
-		}
-	});
-	
-	ReactDOM.render(<Users />, document.getElementById('users'));
-	
-	</script>
-	
-	</body>
-</html>
+<!DOCTYPE HTML>
+
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="1; url=http://localhost:4000/home">
+
+<script>
+	window.location.href = "http://localhost:4000/home"
+</script>
+
+<title>Page Redirection</title>
+
+<!-- Note: don't tell people to `click` the link, just tell them that it is a link. -->
+If you are not redirected automatically, follow the <a href='http://localhost:4000/home'>link to example</a>

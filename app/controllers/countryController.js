@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Country = require('../models/country');
+const User = require('../models/user');
 
 //GET ONE method for COUNTRIES (returns all users filtered by a country and the country's info)
 router.get('/:id', function(req, res, next){

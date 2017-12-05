@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include partials/head.ejs %>
+</head>
+<body>
+	<% include partials/header.ejs %>
+	<div id="top-image">
+		<h1 id="top-title"><%= title %></h1>
+	</div>
+	<hr class="style1">
+	<div class="container">
+		<div id="posters-wrapper" class="content-padding clearfix">
+			<% for (var i = 0; i < games.length; i++) { %>
+				<div class="poster">
+					<a href="/games/<%= games[i].id %>">
+						<img src="/images/<%= games[i].poster %>" class="img-responsive">
+						<div class="poster-info-overlay">
+							<h3><%= games[i].name %></h3>
+							<h4>View More <i class="fa fa-arrow-right"></i></h4>
+						</div>
+					</a>
+				</div>	  
+			<% } %>
+		</div>
+	</div>
+	<hr class="style1">
+
+	<% include partials/footer.ejs %>
+  	<% include partials/scripts.ejs %>
+
+</body>
+</html>

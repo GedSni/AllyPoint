@@ -1,0 +1,15 @@
+<ul>        
+    <% if(errors){ %>
+        <% for (var i = 0; i < errors.length; i++) {%>
+            <li class="alert alert-danger"> <%= errors[0].msg %></li>
+        <% } %>
+    <% } else {  %> 
+        <% if(typeof message != 'undefined' && message){ %>
+            <% if(message.type == "Success"){ %>
+                <li class="alert alert-success"> <%= message.message %></li>
+            <% } else { %>         
+                <li class="alert alert-danger"> <%= message.message %></li>
+            <% } %> 
+        <% } %> 
+    <% } %> 
+</ul> 

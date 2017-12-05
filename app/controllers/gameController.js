@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Game = require('../models/game');
+const User = require('../models/user');
 
 //GET method for GAMES
 router.get('/', function(req, res, next){
 	Game.find({}).then(function(games){
-		res.send(games);
+		res.render('games', { title: 'Games', games : games })
 	});
 });
 
@@ -18,13 +19,15 @@ router.get('/:id', function(req, res, next){
 		else
 		{
 			result.game = game;
-			User.find({game: req.params.id}).then(function(user){
-				if(!user.length)
-					res.send(result);
+			User.find({game: req.params.id}).then(function(users){
+				if(!users.length)
+					res.render('game', { title: result.game.name, game : game, users : users })
 					else
 					{
-						result.user = user;
-						res.send(result);
+						result.users = users;
+						console.log(game);
+						console.log(users);
+						res.render('game', { title: result.game.name, game : game, users : users })
 					}
 			}).catch(next);
 		}
@@ -45,10 +48,17 @@ router.put('/edit/:id', function(req, res, next){
 		Game.findOne({_id: req.params.id}).then(function(game){
 			if(!game)
 				res.status(404).send({error: "The requested resource could not be found (special case)"});
-			else
-				res.send(game);
+			else{
+				res.render('game', { title: game.name, game : game})
+			}
 		});
 	}).catch(next);
+});
+
+router.get('/edit/:id', function(req, res, next){
+	Game.findOne({_id: req.params.id}).then(function(game){
+		res.render('gameEdit', { title: 'Edit game', game : game })
+	});
 });
 
 //DELETE method for GAMES

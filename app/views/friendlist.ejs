@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include partials/head.ejs %>
+</head>
+<body>
+	<% include partials/header.ejs %>
+	<div id="top-image">
+		<h1 id="top-title"><%= title %></h1>
+	</div>
+	<div class="container">
+		<div id="posters-wrapper" class="content-padding clearfix">
+            <% if(typeof friends != 'undefined' && friends){ %>
+                <h2 style="padding-bottom: 10px">Friends of <%= user.username %></h2>
+                <% for (var i = 0; i < friends.length; i++) { %>
+                    <div class="poster">
+                        <a href="/users/<%= friends[i].id %>">
+                            <img src="/images/flags/<%= friends[i].avatar %>" class="img-responsive">
+                            <div class="poster-info-overlay">
+                                <h3><%= friends[i].username %></h3>
+                                <h4>View More <i class="fa fa-arrow-right"></i></h4>
+                            </div>
+                        </a>
+                    </div>	  
+                <% } %>
+                <% } else{ %>
+                    <h2><%= user.username %>'s friendlist is empty.. For now! </h2>
+                <% } %>
+		</div>
+	</div>
+
+	<% include partials/footer.ejs %>
+    <% include partials/scripts.ejs %>
+
+</body>
+</html>

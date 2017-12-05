@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include partials/head.ejs %>
+</head>
+<body>
+	<% include partials/header.ejs %>
+	<div id="top-image">
+		<h1 id="top-title"><%= title %></h1>
+	</div>
+	<div class="container">
+        <div class="span3 well">
+            <center>
+                <a href="#aboutModal" data-toggle="modal" data-target="#myModal"><img src="/images/flags/<%= user.avatar %>" name="aboutme" border: 3px solid black width="140" height="140" class="img-circle"></a>
+                <h3><%= user.username %></h3>
+                <em>Click my avatar for more</em>
+
+                <% if(loggedUser && loggedUser.username == user.username) { %>
+                    <div style="padding-top: 5px"> <a class="btn btn-large btn-info" href='/users/<%= loggedUser._id %>/friendlist/'>Friendlist</a></div>
+                <% } else { %>
+                    <form id="addForm" style="display:none;" class="form-horizontal" method="POST" action='/users/<%= user._id %>/friendlist/add?_method=PUT'>
+                        <div class="form-group">
+                            <input  type='hidden' name="friend" value='<%= loggedUser._id %>' />
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="addFriend" class="btn btn-primary">
+                                Add as friend
+                            </button>  
+                        </div>
+                    </form>
+                    <form id="removeForm" style="display:none;" class="form-horizontal" method="POST" action='/users/<%= user._id %>/friendlist/remove?_method=PUT'>
+                        <div class="form-group">
+                            <input type='hidden' name="friend" value='<%= loggedUser._id %>' />
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-danger">
+                                Remove friend
+                            </button>  
+                        </div>
+                    </form>
+                <% } %>
+            </center>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title" id="myModalLabel">More About <%= user.username %></h4>
+                    </div>
+                    <div class="modal-body">
+                        <center>
+                            <hr class="style1">
+                            <img src="/images/flags/<%= user.avatar %>" name="aboutme" border: 3px solid black width="140" height="140" border="0" class="img-circle"></a>
+                            <h3 class="media-heading"><%= user.username %></h3>
+                            <hr class="style1">
+                            <% if(typeof games != 'undefined' && games){ %>
+                                <% for (var i = 0; i < games.length; i++) { %>
+                                    <div class="mini-poster">
+                                        <a href="/games/<%= games[i].id %>">
+                                            <img src="/images/<%= games[i].poster %>" class="img-responsive">
+                                            <div class="poster-info-overlay">
+                                                <h3><%= games[i].name %></h3>
+                                                <h4>View More <i class="fa fa-arrow-right"></i></h4>
+                                            </div>
+                                        </a>
+                                    </div>	  
+                                <% } %>
+                            <% } %>
+                        </center>
+                        <hr class="style1">
+                    </div>
+                    <div class="modal-footer">
+                        <center>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Back</button>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% include partials/footer.ejs %>
+    <% include partials/scripts.ejs %>
+
+    <script type="text/javascript">
+        window.onload = function(){
+            var loggedUser = <%- JSON.stringify(loggedUser) %>;
+            var user = <%- JSON.stringify(user) %>;
+
+            var isFriend = false; 
+            for (var i = 0; i < user.friend.length; i++) { 
+                if(user.friend[i] == loggedUser._id){ 
+                    var isFriend = true; 
+                } 
+            }
+            if(isFriend){
+                console.log("isFriend");
+                document.getElementById("addForm").style.display = "none";
+                document.getElementById("removeForm").style.display = "";
+            }
+            else if(!isFriend){
+                console.log("isnotFriend");
+                document.getElementById("removeForm").style.display = "none";
+                document.getElementById("addForm").style.display = "";
+            }
+        };
+    </script>
+
+</body>
+</html>

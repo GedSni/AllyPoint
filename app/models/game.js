@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 // create Schema and model
 const GameSchema = new Schema({
+	poster: String,
 	name: {
 		type: String,
 		required: [true, 'Name field is required']

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include partials/head.ejs %>
+</head>
+<body>
+	<% include partials/header.ejs %>
+	<div id="top-image">
+		<h1 id="top-title"><%= title %></h1>
+    </div>
+    <div class="container" style="padding-top: 50px">
+        <div class="container col-md-8 col-md-offset-2">
+            <h2>Data report</h2>
+            <p>Click on the collapsible panel to open and close it.</p>
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse1">Game categories</a>
+                            <a style="float: right;" data-toggle="collapse" href="/categories/add">Add new category</a>
+                        </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse">
+                        <ul class="list-group" id="list1">
+                            <% for (var i = 0; i < categories.length; i++) { %>
+                                <li class="list-group-item">
+                                    <a href='/categories/<%= categories[i].id %>'><%= categories[i].name %></a>
+                                    <a style="text-align: right; float:right; margin: 10px;" href='/categories/delete/<%= categories[i].id %>'>Delete</a> 
+                                    <a style="text-align: right; float:right; margin: 10px;" href='/categories/edit/<%= categories[i].id %>'>Edit</a> 
+                                </li>
+                            <% } %>
+                        </ul>
+                        <div class="panel-footer" id="foot1">Footer</div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse2">Games</a>
+                            <a style="float: right;" data-toggle="collapse" href="/games/add">Add new game</a>
+                        </h4>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse">
+                        <ul class="list-group" id="list2">
+                            <% for (var i = 0; i < games.length; i++) { %>
+                                <li class="list-group-item">
+                                    <a href='/games/<%= games[i].id %>'><%= games[i].name %></a>
+                                    <a style="text-align: right; float:right; margin: 10px;" href='/games/delete/<%= games[i].id %>'>Delete</a> 
+                                    <a style="text-align: right; float:right; margin: 10px;" href='/games/edit/<%= games[i].id %>'>Edit</a> 
+                                </li>
+                            <% } %>
+                        </ul>
+                        <div class="panel-footer" id="foot2">Footer</div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse3">Users</a>
+                            <a style="float: right;" data-toggle="collapse" href="/users/add">Add new user</a>
+                        </h4>
+                    </div>
+                    <div id="collapse3" class="panel-collapse collapse">
+                        <ul class="list-group" id="list3">
+                            <% for (var i = 0; i < users.length; i++) { %>
+                                <li class="list-group-item">
+                                    <a href='/users/<%= users[i].id %>'><%= users[i].username %></a>
+                                    <a style="text-align: right; float:right; margin: 10px;" href='/users/delete/<%= users[i].id %>'>Delete</a> 
+                                    <a style="text-align: right; float:right; margin: 10px;" href='/users/edit/<%= users[i].id %>'>Edit</a> 
+                                </li>
+                            <% } %>
+                        </ul>
+                        <div class="panel-footer" id="foot3">Footer</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<% include partials/footer.ejs %>
+    <% include partials/scripts.ejs %>
+</body>
+</html>
+
+<script>
+    var liList = document.getElementById("list1").getElementsByTagName("li");
+    var largo = liList.length
+    document.getElementById("foot1").innerHTML = "Items: " + largo;
+
+    var liList = document.getElementById("list2").getElementsByTagName("li");
+    var largo = liList.length
+    document.getElementById("foot2").innerHTML = "Items: " + largo;
+
+    var liList = document.getElementById("list3").getElementsByTagName("li");
+    var largo = liList.length
+    document.getElementById("foot3").innerHTML = "Items: " + largo;
+</script>

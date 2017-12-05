@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 // create Schema and model
 const CategorySchema = new Schema({
+	poster: String,
 	name: {
 		type: String,
 		required: [true, 'Name field is required']
